@@ -1,0 +1,16 @@
+[
+  {
+    "id": "user-1784047189513-dtlcnd",
+    "username": "Pitchstep",
+    "password": "$2a$10$PE33lr1qaEld156n58imIOq3KWYCqjjIMvu9pNxufuNQz1wkVQSHK",
+    "stars": 0,
+    "createdAt": "2026-07-14T16:39:49.513Z"
+  },
+  {
+    "id": "user-1784232827649-d4g1uy",
+    "username": "TESTTTE",
+    "password": "$2a$10$B7YKTs0Y5aO//1d80lkTaOi4j6J/PnvSEjQZccLvVZSwYyDJ2SOHC",
+    "stars": 27,
+    "createdAt": "2026-07-16T20:13:47.649Z"
+  }
+]

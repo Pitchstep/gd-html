@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Geometry rrash</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="stats-bar">
+        <div class="stat-item"><span style="color:#00ffff;">Orbs:</span> <span id="orbCount">0</span></div>
+        <div class="stat-item" id="attemptItem" style="display:none;">Attempt <span id="attemptCount">0</span></div>
+    </div>
+
+    <div id="init-ui" class="screen active" onclick="initGame()">
+        <h1 class="gd-text" style="font-size:3rem;">Click/Tap to Init</h1>
+    </div>
+    <div id="level-info-ui" class="screen" style="justify-content:center; align-items:center;">
+        <div class="gd-panel"
+            style="width:650px; max-height:85vh; overflow-y:auto; display:flex; flex-direction:column; gap:15px; position:relative; background:#111; border:2px solid #fff; padding:20px; border-radius:12px;">
+
+            <div style="text-align: center;">
+                <h2 id="info-title" class="gd-text" style="font-size:3.5rem; margin:0;">Level Name</h2>
+                <div id="info-creator" style="color:var(--gd-yellow); font-size:1.2rem; margin-bottom:10px;">By Creator
+                </div>
+                <div id="info-difficulty" class="gd-text" style="font-size:1rem; margin-bottom:6px;"></div>
+                <div id="info-desc" style="color:#ccc; font-style:italic;">Description</div>
+            </div>
+
+            <div class="menu-row" style="justify-content: center; gap: 40px; margin: 20px 0;">
+                <div class="btn-base btn-play" style="width:100px; height:100px;" onclick="playCommunityLevel()"></div>
+                <div class="btn-base btn-icon" style="background:var(--gd-red);" onclick="likeCurrentLevel()">
+                    ❤️ <span id="info-likes">0</span>
+                </div>
+                <div class="btn-base btn-icon" style="background:#555;">
+                    ⬇️ <span id="info-downloads">0</span>
+                </div>
+            </div>
+
+            <div class="gd-text"
+                style="font-size:1.5rem; text-align:left; border-bottom:2px solid #fff; padding-bottom:5px;">Comments
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="comment-input" placeholder="Leave a comment..."
+                    style="flex:1; padding:10px; border-radius:8px; border:2px solid #fff; background:#222; color:#fff;" />
+                <button class="btn-base btn-icon" style="background:var(--gd-green); font-size:1rem; padding:10px 20px;"
+                    onclick="postComment()">POST</button>
+            </div>
+
+            <div id="comments-list" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"></div>
+
+            <div class="btn-base btn-icon close-btn" style="position:absolute; top:-20px; left:-20px; background:#f33;"
+                onclick="setScreen('community')">X</div>
+        </div>
+    </div>
+
+
+    <div id="menu-ui" class="screen">
+        <h1 class="title gd-text"><span>GEOMETRY</span><br>HTML</h1>
+        <div class="menu-row">
+            <div class="btn-base btn-icon blue" onclick="setScreen('icon-kit')">ICONS</div>
+            <div class="btn-base btn-play" onclick="setScreen('level-select')"></div>
+            <div class="btn-base btn-icon yellow" onclick="setScreen('shop')">SHOP</div>
+        </div>
+        <div class="side-btns bottom-btns">
+            <div class="btn-base btn-icon blue" onclick="setScreen('achievements')">ACHIEVEMENTS</div>
+            <div class="btn-base btn-icon" style="background:#333;" onclick="setScreen('credits')">CREDIT</div>
+            <div class="btn-base btn-icon" style="background:#222;" onclick="setScreen('vault')">CODES</div>
+            <div class="btn-base btn-icon purple" onclick="setScreen('debug')">DEV</div>
+        </div>
+        <div class="side-btns left-btns">
+            <div class="btn-base btn-icon" onclick="setScreen('profile')">PROFILE</div>
+        </div>
+        <div class="side-btns right-btns">
+            <div class="btn-base btn-icon" onclick="setScreen('editor')">EDITOR</div>
+            <div class="btn-base btn-icon green" onclick="setScreen('created-levels')">MY LEVELS</div>
+            <div class="btn-base btn-icon" style="background:#00bfae;" onclick="setScreen('search')">SEARCH</div>
+            <div class="btn-base btn-icon" style="background:#2b3dff;" onclick="setScreen('community')">COMMUNITY</div>
+        </div>
+    </div>
+
+    <div id="level-select-ui" class="screen">
+        <div class="menu-row">
+            <div class="btn-base btn-icon" onclick="changeLevel(-1)">&lt;</div>
+            <div class="gd-panel" style="width:350px; text-align:center;">
+                <div class="gd-text" style="font-size:4rem; margin-bottom:10px;" id="lvFace">🟦</div>
+                <div class="gd-text" style="font-size:2rem;" id="lvName">Stereo Madness</div>
+                <div class="gd-text" style="color:#aaa; margin-bottom:20px;" id="lvDiff">Easy</div>
+                <div class="menu-row" style="justify-content:center; gap:20px;">
+                    <div class="btn-base btn-play" style="width:80px; height:80px;" onclick="startGame(false)"></div>
+                    <div class="btn-base btn-icon blue" onclick="startGame(true)">PRACTICE</div>
+                </div>
+            </div>
+            <div class="btn-base btn-icon" onclick="changeLevel(1)">&gt;</div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="icon-kit-ui" class="screen">
+        <div class="gd-panel" style="width:400px; text-align:center;">
+            <h2 class="gd-text">ICON KIT</h2>
+            <div style="display:flex; justify-content:space-around; margin:20px 0;">
+                <div id="previewCube"
+                    style="width:60px; height:60px; border:3px solid #000; box-shadow:0 0 0 2px #fff; position:relative;">
+                </div>
+            </div>
+            <h3 class="gd-text" style="font-size:1rem;">Primary Color</h3>
+            <div class="color-grid" id="c1Grid"></div>
+            <h3 class="gd-text" style="font-size:1rem; margin-top:20px;">Secondary Color</h3>
+            <div class="color-grid" id="c2Grid"></div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="shop-ui" class="screen">
+        <div class="gd-panel" style="width:450px; text-align:center;">
+            <h2 class="gd-text">THE SHOP</h2>
+            <p class="gd-text">Buy COLORS with ORBS!</p>
+            <div id="shopItems"
+                style="display:flex; flex-direction:column; gap:15px; margin-top:20px; max-height:300px; overflow-y:auto;">
+            </div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="vault-ui" class="screen">
+        <div class="gd-panel" style="width:400px; text-align:center;">
+            <h2 class="gd-text" style="color:#aaa;">THE VAULT</h2>
+            <p class="gd-text" id="vaultMsg" style="font-size:1rem;">Enter a code and you may receive a reward...</p>
+            <input type="text" class="vault-input" id="vaultInput" placeholder="..." maxlength="20">
+            <div class="btn-base btn-icon purple" style="margin:0 auto;" onclick="checkVault()">?</div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="credits-ui" class="screen">
+        <div class="gd-panel" style="width:800px; text-align:center;">
+            <h1 class="gd-text">GeometryHTML - Credits</h1>
+            <p class="gd-text" style="font-size:1rem; line-height:2;">
+                Code, Design &amp; Direction by 48_Pitch<br>
+                Sounds/Music by 48_Pitch<br><br />
+                Based on 'Geometry Dash' by RobTop Games<br><br>
+                Thank you so much for checking this project out!<br><br>
+                (Made in HTML5 &amp; JavaScript)
+            </p>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="achievements-ui" class="screen">
+        <div class="gd-panel debug-panel">
+            <h2 class="gd-text">ACHIEVEMENTS</h2>
+            <div id="ach-list" class="ach-grid"></div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="debug-ui" class="screen">
+        <div class="gd-panel debug-panel">
+            <h2 class="gd-text">DEBUG MENU</h2>
+            <p class="gd-text" style="font-size:0.9rem; color:#aaa;">TO TEST.</p>
+            <div class="debug-section">
+                <label class="gd-text" style="font-size:0.9rem;">Popup Title</label>
+                <input id="dbg-popup-title" class="debug-input" value="Debug Popup">
+                <label class="gd-text" style="font-size:0.9rem;">Popup Content</label>
+                <textarea id="dbg-popup-content" class="debug-input" rows="3">This is a custom debug popup.</textarea>
+                <label class="gd-text" style="font-size:0.9rem;">Button Label</label>
+                <input id="dbg-popup-btn" class="debug-input" value="Continue">
+                <div class="debug-btn-grid">
+                    <button class="debug-btn" onclick="runDebugAction('popup')">Spawn popup</button>
+                    <button class="debug-btn" onclick="runDebugAction('orbs')">+50 Orbs</button>
+                    <button class="debug-btn" onclick="runDebugAction('colors')">Unlock colors</button>
+                    <button class="debug-btn" onclick="runDebugAction('complete')">Complete level</button>
+                    <button class="debug-btn" onclick="runDebugAction('crash')">Force crash</button>
+                    <button class="debug-btn" onclick="runDebugAction('theme')">Cycle theme</button>
+                </div>
+            </div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="community-ui" class="screen">
+        <div class="gd-panel community-shell">
+            <h2 class="gd-text">COMMUNITY HUB</h2>
+            <div class="community-grid">
+                <div class="community-card">
+                    <h3 class="gd-text" style="font-size:1rem;">Account</h3>
+                    <div id="community-auth" class="community-auth"></div>
+                    <div class="auth-form">
+                        <input id="community-username" class="debug-input" placeholder="Username">
+                        <input id="community-password" class="debug-input" type="password" placeholder="Password">
+                        <div class="debug-btn-grid">
+                            <button class="debug-btn" onclick="submitCommunityAuth('login')">Login</button>
+                            <button class="debug-btn" onclick="submitCommunityAuth('register')">Register</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="community-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                        <h3 class="gd-text" style="font-size:1rem; margin:0;">Leaderboards</h3>
+                        <button class="debug-btn" style="width:auto; padding:6px 10px;"
+                            onclick="refreshCommunity()">Refresh</button>
+                    </div>
+                    <div id="leaderboard-list" class="community-list"></div>
+                </div>
+            </div>
+            <div class="community-grid">
+                <div class="community-card">
+                    <h3 class="gd-text" style="font-size:1rem;">Publish a level</h3>
+                    <input id="community-title" class="debug-input" placeholder="Title">
+                    <input id="community-desc" class="debug-input" placeholder="Description">
+                    <select id="community-difficulty" class="debug-input"></select>
+                    <textarea id="community-data" class="debug-input" rows="3" placeholder="Level data"></textarea>
+                    <div class="debug-btn-grid">
+                        <button class="debug-btn" onclick="publishCommunityLevel()">Publish</button>
+                        <button class="debug-btn" onclick="fillCommunityFormFromEditor()">Use editor data</button>
+                    </div>
+                </div>
+                <div class="community-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                        <h3 class="gd-text" style="font-size:1rem; margin:0;">Browse levels</h3>
+                        <input id="community-search" class="debug-input" style="width:140px; margin:0;"
+                            placeholder="Search...">
+                    </div>
+                    <div class="community-list" id="community-levels"></div>
+                </div>
+            </div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="created-levels-ui" class="screen">
+        <div class="gd-panel debug-panel" style="width:min(90vw, 560px); text-align:left;">
+            <h2 class="gd-text" style="text-align:center;">MY LEVELS</h2>
+            <p class="gd-text" style="font-size:0.8rem; color:#aaa; text-align:center;">Levels you've built and saved in
+                the Editor.</p>
+            <div id="created-levels-list" class="community-list" style="max-height:400px;"></div>
+            <div class="debug-btn-grid" style="margin-top:12px;">
+                <button class="debug-btn" style="grid-column: span 2; background:var(--gd-green);"
+                    onclick="setScreen('editor')">🧱 Open Editor</button>
+            </div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="profile-ui" class="screen">
+        <div class="gd-panel profile-card">
+            <div class="profile-header">
+                <div class="profile-icon-display" id="profile-cube">
+                    <div id="profile-cube-inner" style="width:50%; height:50%; border:2px solid #000;"></div>
+                </div>
+                <div class="profile-username gd-text" id="profile-username">Guest</div>
+            </div>
+            <div class="profile-stats-grid" id="profile-content"></div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="search-ui" class="screen">
+        <div class="gd-panel community-shell">
+            <h2 class="gd-text">BROWSE LEVELS</h2>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <input id="search-query" class="debug-input" style="margin:0;"
+                    placeholder="Search levels or creators..." onkeydown="if(event.key==='Enter') runLevelSearch();">
+                <button class="debug-btn" style="width:auto; padding:8px 16px;"
+                    onclick="runLevelSearch()">Search</button>
+            </div>
+            <div class="tab-bar" style="margin-top:14px;">
+                <button class="tab-btn active" id="tab-recent" onclick="setSearchTab('recent')">RECENT</button>
+                <button class="tab-btn" id="tab-likes" onclick="setSearchTab('likes')">TOP LIKED</button>
+                <button class="tab-btn" id="tab-downloads" onclick="setSearchTab('downloads')">TOP DOWNLOADED</button>
+            </div>
+            <div class="community-list" id="search-results" style="max-height:420px;"></div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="editor-ui" class="screen">
+        <div class="gd-panel editor-shell">
+            <div class="editor-toolbar">
+                <div id="editor-palette" class="editor-palette"></div>
+                <div class="editor-actions">
+                    <div class="action-btn primary" onclick="testLevel()">▶ TEST LEVEL</div>
+                    <div class="action-btn" onclick="saveEditorLevel()">💾 SAVE AS...</div>
+                    <div class="action-btn" onclick="setScreen('created-levels')">📂 MY LEVELS</div>
+                    <div class="action-btn" onclick="clearEditor()">🧹 CLEAR</div>
+                    <div class="action-btn danger" onclick="setScreen('menu')">✕ EXIT</div>
+                </div>
+            </div>
+            <div class="editor-hint">Click the grid to place tiles. Click and drag to paint. Right-click to erase. Use
+                the palette to switch tools.</div>
+        </div>
+        <div class="editor-cam-controls" style="position:absolute; bottom:20px; display:flex; gap:20px;">
+            <div class="btn-base btn-icon" onclick="moveEditorCam(-200)">&lt;</div>
+            <div class="btn-base btn-icon" onclick="moveEditorCam(200)">&gt;</div>
+        </div>
+    </div>
+
+    <div id="game-ui" class="screen" style="justify-content:flex-start;">
+        <div
+            style="width:80%; max-width:500px; height:15px; background:rgba(0,0,0,0.7); border-radius:10px; border:2px solid #fff; margin-top:20px; overflow:hidden;">
+            <div id="progressFill" style="height:100%; width:0%; background:#00ffcc; transition:width 0.1s;"></div>
+        </div>
+    </div>
+
+    <div id="practice-ui" class="screen" style="justify-content:flex-end; padding-bottom:30px; pointer-events:none;">
+        <div style="display:flex; gap:40px; pointer-events:auto;">
+            <div class="btn-base btn-icon" style="background:rgba(0,0,0,0.5);" onclick="removeCheckpoint()">-</div>
+            <div class="btn-base btn-icon" style="background:rgba(0,0,0,0.5);" onclick="addCheckpoint()">+</div>
+        </div>
+    </div>
+
+    <div id="game-over-ui" class="screen">
+        <h2 class="gd-text" style="font-size:4rem;" id="goTitle">Crashed...</h2>
+        <div class="gd-text" style="font-size:3rem; color:var(--gd-yellow); margin-bottom:40px;" id="percentText">0%
+        </div>
+        <div class="menu-row">
+            <div class="btn-base btn-play" onclick="retryLevel()"></div>
+            <div class="btn-base btn-icon" style="background:#f33;" onclick="setScreen('menu')">X</div>
+        </div>
+    </div>
+
+    <div id="popup-root" class="gd-popup-backdrop">
+        <div class="gd-popup accent-yellow">
+            <div class="gd-popup-titlebar" id="popup-title">Notice</div>
+            <div class="gd-popup-body" id="popup-body"></div>
+            <div class="gd-popup-btnrow" id="popup-actions"></div>
+        </div>
+    </div>
+    <div id="toast-root"></div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script src="game.js"></script>
+</body>
+
+</html>
