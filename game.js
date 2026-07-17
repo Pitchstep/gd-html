@@ -17,7 +17,7 @@ const SAVE_KEY = 'gd_ultimate_save_v1';
 const COMMUNITY_USER_KEY = 'gd_community_user_v1';
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
     ? 'http://localhost:3000'
-    : 'https://YOUR-RENDER-APP-NAME.onrender.com'; // ← swap in your real Render URL once deployed
+    : 'https://gd-html.onrender.com'; // ← swap in your real Render URL once deployed
 let save = {
     orbs: 0,
     c1: '#ffde00', c2: '#00ff00',
