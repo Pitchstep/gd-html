@@ -199,6 +199,7 @@ app.post('/api/register', asyncHandler(async (req, res) => {
   res.status(201).json({ user: sanitizeUser(user) });
 }));
 
+// hehe login (Cmmit)
 app.post('/api/login', asyncHandler(async (req, res) => {
   const username = sanitizeString(req.body?.username, 30);
   const password = req.body?.password;
