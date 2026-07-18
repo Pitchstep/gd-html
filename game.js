@@ -18,7 +18,7 @@ const COMMUNITY_USER_KEY = 'gd_community_user_v1';
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
     ? 'http://localhost:3000'
     : 'https://gd-html.onrender.com'; // ← swap in your real Render URL once deployed
-const GAME_VERSION = '1.0';
+const GAME_VERSION = '1.031';
 const UPDATES_PATH = './Updates';
 let save = {
     orbs: 0,
@@ -117,17 +117,9 @@ function parseCustomObject(type, c, r, st) {
 
 const levels = [
     {
-        name: 'Stereo Madness', diff: 'Easy', face: '🟩', color: '#0033cc',
-        data: '........>................................................................................................................................................................................................................................^.'
+        name: 'Coming Soon!', diff: 'Unrated', face: '🟩', color: '#0033cc',
+        data: '',
     },
-    {
-        name: 'Blast Processing', diff: 'Harder', face: '⚡', color: '#2200aa',
-        data: '........>........__....__....__....__....__....__....__....__....__....__....__....__....__....__...^.'
-    },
-    {
-        name: 'Nexus', diff: 'Hard Demon', face: '🌌', color: '#6600ff',
-        data: '........>........__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__....__...o...'
-    }
 ];
 
 let currLevel = 0;

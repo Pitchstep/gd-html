@@ -1,0 +1,30 @@
+[
+    {
+        "id": "1_03",
+        "title": "Update Log & Version Tracking",
+        "date": "2026-07-18",
+        "file": "1_03.md",
+        "bg": "https://picsum.photos/seed/gdupdate4/800/400"
+    },
+    {
+        "id": "1_02",
+        "title": "Difficulty Tiers, Profiles & Search",
+        "date": "2026-07-17",
+        "file": "1_02.md",
+        "bg": "https://picsum.photos/seed/gdupdate3/800/400"
+    },
+    {
+        "id": "1_01",
+        "title": "My Levels & Save Slots",
+        "date": "2026-07-15",
+        "file": "1_01.md",
+        "bg": "https://picsum.photos/seed/gdupdate2/800/400"
+    },
+    {
+        "id": "1_0",
+        "title": "Editor Updates",
+        "date": "2026-07-14",
+        "file": "1_0.md",
+        "bg": "https://picsum.photos/seed/gdupdate1/800/400"
+    }
+]
