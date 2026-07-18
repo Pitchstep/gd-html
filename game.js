@@ -18,6 +18,8 @@ const COMMUNITY_USER_KEY = 'gd_community_user_v1';
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:')
     ? 'http://localhost:3000'
     : 'https://gd-html.onrender.com'; // ← swap in your real Render URL once deployed
+const GAME_VERSION = '1.0';
+const UPDATES_PATH = './Updates';
 let save = {
     orbs: 0,
     c1: '#ffde00', c2: '#00ff00',
@@ -429,6 +431,7 @@ function setScreen(id) {
     else if (id === 'created-levels') { renderCreatedLevels(); document.getElementById('created-levels-ui').classList.add('active'); }
     else if (id === 'profile') { renderProfile(); document.getElementById('profile-ui').classList.add('active'); }
     else if (id === 'search') { runLevelSearch(); document.getElementById('search-ui').classList.add('active'); }
+    else if (id === 'updates') { renderUpdatesSidebar(); document.getElementById('updates-ui').classList.add('active'); }
     else if (id === 'editor') { state = 'EDITOR'; buildEditorPalette(); document.getElementById('editor-ui').classList.add('active'); }
     else if (id === 'level-info') { document.getElementById('level-info-ui').classList.add('active'); }
 }
@@ -510,6 +513,95 @@ function renderSearchResults(levelList) {
             </div>
         `;
     }).join('');
+}
+
+let updatesManifest = null;
+let activeUpdateId = null;
+
+async function loadUpdatesManifest() {
+    if (updatesManifest) return updatesManifest;
+    try {
+        const res = await fetch(`${UPDATES_PATH}/manifest.json`);
+        if (!res.ok) throw new Error('manifest not found');
+        updatesManifest = await res.json();
+    } catch (e) {
+        updatesManifest = [];
+    }
+    return updatesManifest;
+}
+
+function renderVersionTag() {
+    const el = document.getElementById('version-tag');
+    if (el) el.innerText = `v${GAME_VERSION}`;
+}
+
+async function renderUpdatesSidebar() {
+    const root = document.getElementById('updates-sidebar');
+    if (!root) return;
+    root.innerHTML = '<div class="community-empty">Loading…</div>';
+    const list = await loadUpdatesManifest();
+    if (!list.length) {
+        root.innerHTML = '<div class="community-empty">No update logs found.</div>';
+        return;
+    }
+    root.innerHTML = list.map(u => `
+        <div class="update-card${u.id === activeUpdateId ? ' selected' : ''}" style="--bg-img:url('${u.bg}')" onclick="openUpdate('${u.id}')">
+            <div class="update-card-overlay">
+                <div class="update-card-title">${u.title}</div>
+                <div class="update-card-date">${u.date}</div>
+            </div>
+        </div>
+    `).join('');
+    if (!activeUpdateId && list.length) openUpdate(list[0].id);
+}
+
+async function openUpdate(id) {
+    const list = await loadUpdatesManifest();
+    const entry = list.find(u => u.id === id);
+    if (!entry) return;
+    activeUpdateId = id;
+    renderUpdatesSidebar();
+    const root = document.getElementById('updates-content');
+    root.innerHTML = '<div class="community-empty">Loading…</div>';
+    try {
+        const res = await fetch(`${UPDATES_PATH}/${entry.file}`);
+        if (!res.ok) throw new Error('not found');
+        const text = await res.text();
+        root.innerHTML = renderMarkdown(text);
+    } catch (e) {
+        root.innerHTML = '<div class="community-empty">Could not load this update.</div>';
+    }
+}
+
+// Small, dependency-free Markdown → HTML renderer.
+// Supports: headers, **bold**, *italic*, `code`, ```code blocks```, [links](url), - lists, --- rules, paragraphs.
+function renderMarkdown(md) {
+    const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    let src = escapeHtml(md);
+
+    src = src.replace(/```([\s\S]*?)```/g, (m, code) => `<pre><code>${code.trim()}</code></pre>`);
+    src = src.replace(/`([^`]+)`/g, '<code>$1</code>');
+    src = src.replace(/^###### (.*)$/gm, '<h6>$1</h6>');
+    src = src.replace(/^##### (.*)$/gm, '<h5>$1</h5>');
+    src = src.replace(/^#### (.*)$/gm, '<h4>$1</h4>');
+    src = src.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+    src = src.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+    src = src.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+    src = src.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    src = src.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    src = src.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    src = src.replace(/^---$/gm, '<hr>');
+    src = src.replace(/(^|\n)((?:- .*(?:\n|$))+)/g, (m, pre, block) => {
+        const items = block.trim().split('\n').map(l => `<li>${l.replace(/^- /, '')}</li>`).join('');
+        return `${pre}<ul>${items}</ul>`;
+    });
+
+    return src.split(/\n{2,}/).map(block => {
+        const trimmed = block.trim();
+        if (!trimmed) return '';
+        if (/^<(h\d|ul|pre|hr)/.test(trimmed)) return trimmed;
+        return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+    }).join('\n');
 }
 
 function updateStats() {
@@ -1397,10 +1489,10 @@ function loop(t) {
     requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-
 buildEditorPalette();
 renderAchievements();
 renderCommunity();
 updateStats();
 refreshCommunity();
 buildDifficultySelect('community-difficulty');
+renderVersionTag();

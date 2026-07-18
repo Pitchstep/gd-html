@@ -73,6 +73,7 @@
         </div>
         <div class="side-btns left-btns">
             <div class="btn-base btn-icon" onclick="setScreen('profile')">PROFILE</div>
+            <div class="btn-base btn-icon" style="background:#996600;" onclick="setScreen('updates')">UPDATES</div>
         </div>
         <div class="side-btns right-btns">
             <div class="btn-base btn-icon" onclick="setScreen('editor')">EDITOR</div>
@@ -80,6 +81,7 @@
             <div class="btn-base btn-icon" style="background:#00bfae;" onclick="setScreen('search')">SEARCH</div>
             <div class="btn-base btn-icon" style="background:#2b3dff;" onclick="setScreen('community')">COMMUNITY</div>
         </div>
+        <div class="version-tag" id="version-tag" onclick="setScreen('updates')">v1.0.0</div>
     </div>
 
     <div id="level-select-ui" class="screen">
@@ -274,6 +276,19 @@
                 <button class="tab-btn" id="tab-downloads" onclick="setSearchTab('downloads')">TOP DOWNLOADED</button>
             </div>
             <div class="community-list" id="search-results" style="max-height:420px;"></div>
+        </div>
+        <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
+    </div>
+
+    <div id="updates-ui" class="screen">
+        <div class="gd-panel updates-shell">
+            <h2 class="gd-text">UPDATE LOG</h2>
+            <div class="updates-layout">
+                <div class="updates-sidebar" id="updates-sidebar"></div>
+                <div class="updates-content markdown-body" id="updates-content">
+                    <div class="community-empty">Select an update on the left to view its notes.</div>
+                </div>
+            </div>
         </div>
         <div class="btn-base btn-icon close-btn" onclick="setScreen('menu')">X</div>
     </div>
